@@ -11,6 +11,10 @@ body {
 	width: 50%;
 }
 
+.white-bg {
+	background-color: white;
+}
+
 #logo {
 	height: 50px;
 	width: auto;
@@ -20,7 +24,3 @@ body {
 	padding: 20px;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}

@@ -1,0 +1,30 @@
+
+#library-wrapper {
+	padding: 3%;
+	background-color: white;
+	border-radius: 5px;
+}
+
+#library-grid {
+	margin-top : 10px;
+}
+
+#library-matrix-list {
+	height : auto;
+}
+
+.form-matrix{
+	width : 50px !important;
+}
+
+.entries-grid.column {
+	padding: 4px !important;
+}
+
+.entries-grid.row {
+	padding: 0px !important;
+}
+
+.entries-grid.grid {
+	padding : 1.5% !important;
+}

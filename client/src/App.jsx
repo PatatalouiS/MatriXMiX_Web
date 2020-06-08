@@ -1,15 +1,15 @@
 
 import React from 'react';
 import './index.css';
-import logo from './img/logo.png';
+import Header from './components/Header';
+import TabMenu from './components/TabMenu';
+import { Container } from 'semantic-ui-react';
 
-const App = () => {
-	return (
-		<div id='logo-container'>
-			<img src={logo} className='center' id='logo'/>
-		</div>
-		
-	);
-};
+const App = () => (
+	<Container>
+		<Header/>
+		<TabMenu/>
+	</Container>
+);
 
 export default App;
