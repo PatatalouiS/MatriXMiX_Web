@@ -28,3 +28,8 @@
 .entries-grid.grid {
 	padding : 1.5% !important;
 }
+
+#btn-add {
+	text-align : center;
+	margin-top : 20px;
+}

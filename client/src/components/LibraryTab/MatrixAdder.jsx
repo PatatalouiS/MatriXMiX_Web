@@ -1,68 +1,50 @@
 
 import React from 'react';
-import { Segment, Form, Divider, Input, Select } from 'semantic-ui-react';
+import { Segment, Form, Divider, Button, Icon } from 'semantic-ui-react';
 import MatrixEntries from './MatrixEntries';
 import { useState } from 'react';
+import { validMatrix } from '../../utils/validators';
+import * as math from 'mathjs';
 
 const options = new Array(10)
     .fill(null)
-    .map((el, i) => ({  key : i+1, text : String(i+1), value : i+1 }));
+    .map((el, i) => ({  
+        key : i+1, 
+        text : String(i+1), 
+        value : i+1 
+    }));
+
+const DEFAULT_SIZE = 3;
 
 const MatrixAdder = () => {
+    const [ matrix, setMatrix ] = useState( math.zeros(DEFAULT_SIZE, DEFAULT_SIZE) );
+    const [ nbL, nbC ] = matrix.size();
 
-    const [ matrix, setMatrix ] = useState({
-        nbLines : 3,
-        nbColumns : 3,
-        entries : new Array(3).fill(new Array(3).fill(null))
-    });
-
-    const setNbLines = (event, { value }) => {
+    const setSize = (type) => (event, { value }) => {
         setMatrix((prev) => {
-            const newObj = { ...prev };
-            const diff = Math.abs(value - prev.nbLines);
-            const lastLength = prev.entries.length;
+            const newMatrix = prev.clone();
+            const [ nbL, nbC ] = prev.size();
 
-            if(value < prev.nbLines) {
-                newObj.entries.splice(lastLength - diff, lastLength);
-            }
-            else {
-                for(let i = 0; i < diff ; ++i) {
-                    newObj.entries.push(new Array(prev.nbColumns).fill(null));
-                }
-            }
-
-            return {
-                ...newObj,
-                nbLines : value
-            };
+            newMatrix.resize([ 
+                type === 'line' ? value : nbL, 
+                type === 'line' ? nbC : value 
+            ], '0');
+            return newMatrix;
         });
     };
 
-    const setNbColumns = (event, { value }) => {
-        setMatrix((prev) => {
-            const newObj = { ...prev };
-            const diff = Math.abs(value - prev.nbColumns);
-            const lastLength = prev.nbColumns;
-
-            if(value < prev.nbColumns) {
-                for(let i = 0; i < prev.nbLines ; ++i) {
-                    newObj.entries[i].splice(lastLength - diff, lastLength);
-                }
-            }
-            else {
-                for(let i = 0; i < prev.nbLines ; ++i) {
-                    for(let j = 0; j < diff; j++) {
-                        newObj.entries[i].push(null);
-                    }
-                }
-            }
-
-            return {
-                ...newObj,
-                nbColumns : value
-            }
-        })
+    const setValues = (idL, idC) => (event, { value }) => {
+        setMatrix((prev) => math.subset(prev, math.index(idL, idC), value));
     };
+
+    const handleSubmit = () => {
+        if(validMatrix(matrix)) {
+
+        }
+        else {
+            
+        }
+    }
 
     return (
         <Segment>
@@ -73,21 +55,33 @@ const MatrixAdder = () => {
                         label='Nom Matrice'/>
                     <Form.Select
                         label='Nb Lignes' 
-                        options={ options }
-                        value={ matrix.nbLines } 
-                        text={ String(matrix.nbLines) }
-                        onChange={ setNbLines }/>
+                        options = { options }
+                        value = { nbL } 
+                        text = { String(nbL) }
+                        onChange={ setSize('line') }/>
                     <Form.Select 
                         label='Nb Colonnes' 
-                        value={ matrix.nbColumns } 
-                        text={ String(matrix.nbColumns) }
+                        value={ nbC } 
+                        text={ String(nbC) }
                         options={ options }
-                        onChange={ setNbColumns }/>
+                        onChange={ setSize('column') }/>
                 </Form.Group>
 
                 <Divider/>
 
-                <MatrixEntries matrix={ matrix } />
+                <MatrixEntries matrix={ matrix } handleChange = { setValues }/>
+
+                <div id='btn-add'>
+                    <Button 
+                        icon 
+                        labelPosition='left' 
+                        color='green' 
+                        onClick={ handleSubmit }>
+                        <Icon name='check' />
+                            Ajouter
+                    </Button>
+                </div> 
+  
             </Form>
         </Segment>
     )
