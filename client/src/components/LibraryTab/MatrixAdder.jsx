@@ -4,45 +4,55 @@ import { Segment, Form, Divider, Button, Icon } from 'semantic-ui-react';
 import MatrixEntries from './MatrixEntries';
 import { useState } from 'react';
 import { validMatrix } from '../../utils/validators';
+import { NewArray, NewMatrix } from '../../utils/utils';
 import * as math from 'mathjs';
+import { useSelector, useDispatch } from 'react-redux';
+import { addMatrix } from '../../utils/store';
 
-const options = new Array(10)
-    .fill(null)
+const DEFAULT_SIZE = 3;
+const MAX_SIZE = 10;
+
+const options = NewArray(MAX_SIZE)
     .map((el, i) => ({  
         key : i+1, 
         text : String(i+1), 
         value : i+1 
     }));
 
-const DEFAULT_SIZE = 3;
-
 const MatrixAdder = () => {
-    const [ matrix, setMatrix ] = useState( math.zeros(DEFAULT_SIZE, DEFAULT_SIZE) );
-    const [ nbL, nbC ] = matrix.size();
+    const matrixLibrary         = useSelector(matrix => matrix);
+    const dispatch              = useDispatch();
+    const [ name , setName ]    = useState('');
+    const [ matrix, setMatrix ] = useState( NewMatrix(DEFAULT_SIZE, DEFAULT_SIZE));
+    const [ nbL, nbC ]          = matrix.size();
 
-    const setSize = (type) => (event, { value }) => {
+    console.log(matrixLibrary);
+
+    const handleSizeChange = (type) => (event, { value }) => {
         setMatrix((prev) => {
-            const newMatrix = prev.clone();
             const [ nbL, nbC ] = prev.size();
 
-            newMatrix.resize([ 
+            return math.resize(prev, [
                 type === 'line' ? value : nbL, 
                 type === 'line' ? nbC : value 
             ], '0');
-            return newMatrix;
         });
     };
 
-    const setValues = (idL, idC) => (event, { value }) => {
+    const handleValuesChange = (idL, idC) => (event, { value }) => {
         setMatrix((prev) => math.subset(prev, math.index(idL, idC), value));
+    };
+
+    const handleNameChange = (event, { value }) => {
+        setName(value);
     };
 
     const handleSubmit = () => {
         if(validMatrix(matrix)) {
-
+            dispatch(addMatrix({ name, matrix}));
         }
         else {
-            
+            console.log('error');
         }
     }
 
@@ -52,24 +62,27 @@ const MatrixAdder = () => {
                 <Form.Group widths='equal'>
                     <Form.Input 
                         fluid 
-                        label='Nom Matrice'/>
+                        label='Nom Matrice'
+                        onChange={ handleNameChange }/>
                     <Form.Select
                         label='Nb Lignes' 
                         options = { options }
                         value = { nbL } 
                         text = { String(nbL) }
-                        onChange={ setSize('line') }/>
+                        onChange={ handleSizeChange('line') }/>
                     <Form.Select 
                         label='Nb Colonnes' 
                         value={ nbC } 
                         text={ String(nbC) }
                         options={ options }
-                        onChange={ setSize('column') }/>
+                        onChange={ handleSizeChange('column') }/>
                 </Form.Group>
 
                 <Divider/>
 
-                <MatrixEntries matrix={ matrix } handleChange = { setValues }/>
+                <MatrixEntries 
+                    matrix={ matrix } 
+                    handleChange = { handleValuesChange }/>
 
                 <div id='btn-add'>
                     <Button 

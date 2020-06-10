@@ -6,11 +6,32 @@
 }
 
 #library-grid {
-	margin-top : 10px;
+	margin-top: 10px;;
 }
 
 #library-matrix-list {
-	height : auto;
+	border-top: none;
+	border-right: none;
+	border-left: none;
+	border-bottom-left-radius: 0px;
+	border-bottom-right-radius: 0px;
+}
+
+#library-matrix-table-column {
+	
+	/*padding: 0px !important;*/
+}
+
+.mjx-chtml.MJXc-display {
+	padding: none;
+	margin: 0px;
+}
+
+#library-matrix-table-wrapper {
+	height: 100%;
+	box-shadow: 0.1px 0.1px 3px 0px lightgray;
+	border-radius: 5px;;
+	border : 1px solid lightgray
 }
 
 .form-matrix{
@@ -32,4 +53,9 @@
 #btn-add {
 	text-align : center;
 	margin-top : 20px;
+}
+
+#viewer-wrapper {
+	width: 100%;
+	text-align: center;
 }

@@ -1,7 +1,7 @@
-body {
-	background-image: url(img/background.png) !important;
-	background-size: cover !important;
- 	background-repeat: no-repeat !important;
+body{
+	background-image: url(img/background_final.jpg) !important;
+	background-size:  cover !important ;
+	background-repeat: no-repeat !important;
 }
 
 .center {
