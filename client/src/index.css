@@ -1,4 +1,5 @@
-body{
+
+body {
 	background-image: url(img/background_final.jpg) !important;
 	background-size:  cover !important ;
 	background-repeat: no-repeat !important;
@@ -22,5 +23,15 @@ body{
 
 #logo-container {
 	padding: 20px;
+}
+
+.main-wrapper {
+	padding: 3%;
+	background-color: white;
+	border-radius: 5px;
+}
+
+.scrollable {
+	overflow: auto !important;
 }
 

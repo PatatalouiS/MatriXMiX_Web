@@ -1,15 +1,23 @@
 
-import { parse } from 'mathjs';
+import { evaluate } from 'mathjs';
 
 export const validMatrix = (matrix) => {
-    let valid = true
-    matrix.forEach((value, index) => {
-        if(parse(value).value === undefined) {
-            valid = false
-        }
-    }) 
-    
-    return valid;
+    try {
+        matrix.forEach((value, index) => {
+            evaluate(value); 
+        });
+    }
+    catch(error) {
+        return false;
+    }
+ 
+    return true;
+};
+
+export const validName = (name, library) => {
+    return !library.some((matrixObj) => matrixObj.name === name)
+        && (name !== '')
+        && isNaN(name[0]);
 };
 
 export default {

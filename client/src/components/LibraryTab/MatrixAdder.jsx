@@ -1,32 +1,30 @@
 
-import React from 'react';
-import { Segment, Form, Divider, Button, Icon } from 'semantic-ui-react';
+import React, { useEffect } from 'react';
+import { Segment, Form, Divider, 
+        Button, Icon } from 'semantic-ui-react';
 import MatrixEntries from './MatrixEntries';
 import { useState } from 'react';
-import { validMatrix } from '../../utils/validators';
-import { NewArray, NewMatrix } from '../../utils/utils';
+import { validMatrix, validName } from '../../utils/validators';
 import * as math from 'mathjs';
 import { useSelector, useDispatch } from 'react-redux';
 import { addMatrix } from '../../utils/store';
-
-const DEFAULT_SIZE = 3;
-const MAX_SIZE = 10;
-
-const options = NewArray(MAX_SIZE)
-    .map((el, i) => ({  
-        key : i+1, 
-        text : String(i+1), 
-        value : i+1 
-    }));
+import CollapseError from '../CollapseError';
+import CollapseSuccess from '../CollapseSuccess';
+import handling from '../../utils/error_success';
+import MatrixSpecs from './MatrixSpecs';
+import { NewMatrix } from '../../utils/utils';
+import _ from '../../utils/constants';
 
 const MatrixAdder = () => {
-    const matrixLibrary         = useSelector(matrix => matrix);
+    const matrixLibrary         = useSelector(x => x);
     const dispatch              = useDispatch();
     const [ name , setName ]    = useState('');
-    const [ matrix, setMatrix ] = useState( NewMatrix(DEFAULT_SIZE, DEFAULT_SIZE));
-    const [ nbL, nbC ]          = matrix.size();
+    const [ matrix, setMatrix ] = useState(NewMatrix(_.DEFAULT_SIZE, _.DEFAULT_SIZE));
+    const [ status, setStatus ] = useState({ error : null, success : null});
 
-    console.log(matrixLibrary);
+    useEffect(() => {
+        return () => setStatus({ error : null, success : null });
+    }, [name, matrix]);
 
     const handleSizeChange = (type) => (event, { value }) => {
         setMatrix((prev) => {
@@ -48,41 +46,48 @@ const MatrixAdder = () => {
     };
 
     const handleSubmit = () => {
-        if(validMatrix(matrix)) {
-            dispatch(addMatrix({ name, matrix}));
+        setStatus({ error : null, success : null});
+        if(!validMatrix(matrix)) {
+            setStatus(prev => ({ 
+                ...prev, 
+                error : handling.ERR_BAD_VALUES 
+            }));
+        } 
+        else if(!validName(name, matrixLibrary)) {
+            setStatus(prev => ({ 
+                ...prev, 
+                error : handling.ERR_BAD_NAME
+            }));
         }
         else {
-            console.log('error');
+            dispatch(addMatrix({ name, matrix}));
+            setStatus(prev => ({ 
+                ...prev, 
+                success : handling.SUC_MATRIX_ADDED 
+            }));
         }
     }
 
     return (
         <Segment>
             <Form>
-                <Form.Group widths='equal'>
-                    <Form.Input 
-                        fluid 
-                        label='Nom Matrice'
-                        onChange={ handleNameChange }/>
-                    <Form.Select
-                        label='Nb Lignes' 
-                        options = { options }
-                        value = { nbL } 
-                        text = { String(nbL) }
-                        onChange={ handleSizeChange('line') }/>
-                    <Form.Select 
-                        label='Nb Colonnes' 
-                        value={ nbC } 
-                        text={ String(nbC) }
-                        options={ options }
-                        onChange={ handleSizeChange('column') }/>
-                </Form.Group>
+                <MatrixSpecs 
+                    onNameChange={ handleNameChange }
+                    onSizeChange={ handleSizeChange }/>
 
                 <Divider/>
 
                 <MatrixEntries 
                     matrix={ matrix } 
                     handleChange = { handleValuesChange }/>
+
+                <CollapseError 
+                    visible={ !!status.error }
+                    content={ status.error?.text }/>
+
+                <CollapseSuccess 
+                    visible={ !!status.success }
+                    content={ status.success?.text }/>
 
                 <div id='btn-add'>
                     <Button 
@@ -94,7 +99,6 @@ const MatrixAdder = () => {
                             Ajouter
                     </Button>
                 </div> 
-  
             </Form>
         </Segment>
     )

@@ -1,17 +1,16 @@
 
 import React from 'react';
-import LibraryTab from './LibraryTab/LibraryTab.jsx';
+import LibraryTab from './LibraryTab/LibraryTab';
+import ComputeTab from './ComputeTab/ComputeTab';
 import { Tab } from 'semantic-ui-react';
 
 const panes = [
-    { menuItem : 'Calculer', render : () => { } },
-    { menuItem : 'Librarie', render : () =>  <LibraryTab className='white-bg'/> }
+    { menuItem : 'Calculer', render : () => <ComputeTab/> },
+    { menuItem : 'Librarie', render : () =>  <LibraryTab/> }
 ];
 
 const TabMenu = () => (
-
     <Tab panes={ panes } menu={{ color : 'blue' }} />
-    
 );
 
 export default TabMenu;

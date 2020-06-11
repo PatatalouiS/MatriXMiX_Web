@@ -12,5 +12,6 @@ export const NewMatrix = (nbL, nbC, value = '0') => {
 }
 
 export default {
-    NewArray
+    NewArray,
+    NewMatrix
 };

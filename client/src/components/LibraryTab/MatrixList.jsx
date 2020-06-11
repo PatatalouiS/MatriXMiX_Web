@@ -1,18 +1,36 @@
 
-import React from 'react';
-import { Table } from 'semantic-ui-react';
+import React, { useMemo, useState } from 'react';
+import { Table, Container, Grid } from 'semantic-ui-react';
 import { useSelector } from 'react-redux';
 
 const MatrixList = ({ handleSelect }) => {
+    const [ selectedIndex, setSelectedIndex ] = useState(0);
     const matrixLibrary = useSelector(x => x);
 
     const handleClick = (index) => {
+        setSelectedIndex(index);
         handleSelect(matrixLibrary[index]);
-    }
+    };
+
+    const rows = useMemo(() => matrixLibrary.map((matrixObj, index) => {
+        const { name, matrix } = matrixObj;
+        const [ nbL, nbC ] = matrix.size();
+
+        return (
+            <Table.Row 
+                key={ name } 
+                onClick={ () => handleClick(index) }
+                className={ selectedIndex === index ? 'row-selected' : '' }>
+                <Table.Cell> { name } </Table.Cell>
+                <Table.Cell> { nbL } </Table.Cell>
+                <Table.Cell> { nbC }</Table.Cell>
+            </Table.Row>
+        )
+    }), [ matrixLibrary, selectedIndex ] );
 
     return (
-        <div id='library-matrix-table-wrapper'>
-            <Table striped unstackable id='library-matrix-list' selectable>
+        <Container fluid id='library-matrix-table-wrapper'>
+            <Table striped unstackable>
                 <Table.Header>
                     <Table.Row>
                         <Table.HeaderCell>Nom</Table.HeaderCell>
@@ -22,18 +40,10 @@ const MatrixList = ({ handleSelect }) => {
                 </Table.Header>
 
                 <Table.Body>
-                {
-                    matrixLibrary.map((matrixObj, index) => (
-                        <Table.Row key={ index } onClick={ () => handleClick(index) }>
-                            <Table.Cell> { matrixObj.name } </Table.Cell>
-                            <Table.Cell> { matrixObj.matrix.size()[0] } </Table.Cell>
-                            <Table.Cell> { matrixObj.matrix.size()[1] } </Table.Cell>
-                        </Table.Row>
-                    ))
-                }
+                    { rows }
                 </Table.Body>
             </Table>
-        </div>
+        </Container>
     )
 }
 
