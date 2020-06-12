@@ -6,6 +6,7 @@ import ComputeMenu from './ComputeMenu';
 import { START_OP } from '../../utils/constants';
 import ComputeWidget from './ComputeWidget';
 import LatexViewer from './LatexViewer';
+import MatrixList from '../LibraryTab/MatrixList';
 
 const ComputeTab = () => {
     const [ operation, setOperation ] = useState(START_OP);
@@ -18,8 +19,12 @@ const ComputeTab = () => {
 
     return (
         <div className="main-wrapper">
-            <ComputeHeader/>
             <Grid id="compute-grid">
+                <Grid.Row>
+                    <Grid.Column>
+                        <ComputeHeader/>
+                    </Grid.Column>
+                </Grid.Row>
                 <Grid.Row>
                     <Grid.Column mobile={16} computer={5}>
                         <ComputeMenu operation={ operation } onChange={ handleOpChange }/>
@@ -29,7 +34,10 @@ const ComputeTab = () => {
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row>
-                    <Grid.Column>
+                    <Grid.Column mobile={16} computer={5}>
+                        <MatrixList/>
+                    </Grid.Column>
+                    <Grid.Column mobile={16} computer={11}>
                         <LatexViewer result={ result } operation={ operation }/>
                     </Grid.Column>
                 </Grid.Row>

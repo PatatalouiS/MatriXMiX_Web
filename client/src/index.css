@@ -1,6 +1,6 @@
 
 body {
-	background-image: url(img/background_final.jpg) !important;
+	background-image: url(img/background_raw.png) !important;
 	background-size:  cover !important ;
 	background-repeat: no-repeat !important;
 	background-attachment: fixed !important;
@@ -27,7 +27,7 @@ body {
 }
 
 .main-wrapper {
-	padding: 3%;
+	padding: 2.2%;
 	background-color: white;
 	border-radius: 5px;
 }
@@ -40,7 +40,46 @@ body {
 	width: 100%;
 }
 
+.full-height {
+	height: 100%;
+}
+
 .center-btn {
 	text-align: center;
 }
 
+.transparent {
+	background-color: rgba(0,0,0,0) !important;
+}
+
+.vertical-align {	
+
+}
+
+#footer {
+	color : white;
+	padding-bottom: 30px;
+}
+
+/* Mathjax container */
+.mjx-chtml.MJXc-display {
+	margin-top : auto;
+	margin-bottom: auto;
+	padding: none;
+	margin: 0px;
+}
+
+#mjx-formula {
+
+}
+
+#viewer-header {
+	margin-bottom: 0px;
+}
+
+#mjx-area {
+	height: 100%;
+	display : flex;
+	align-items: center;
+	justify-content: center;
+}

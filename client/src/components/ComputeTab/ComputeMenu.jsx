@@ -31,7 +31,7 @@ const ComputeMenu = ({ operation, onChange }) => {
     }
 
     return (
-        <Segment>
+        <Segment className='full-height'>
             <Form>
                 <Form.Select
                     label={ `Type d'opérations` }

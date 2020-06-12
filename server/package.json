@@ -1,11 +1,20 @@
 {
-  "name": "server",
+  "name": "test_napi",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "compile": "node-gyp rebuild",
+    "start": "node main.js"
   },
+  "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mathjs": "^7.0.0",
+    "nan": "file:nan",
+    "node-gyp": "^5.1.1"
+  },
+  "gypfile": true
 }

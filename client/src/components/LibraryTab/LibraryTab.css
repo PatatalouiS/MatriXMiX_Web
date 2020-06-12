@@ -6,7 +6,7 @@
 ¨*/
 
 #library-grid {
-	margin-top: 10px;
+
 }
 
 .ui.table {
@@ -32,6 +32,7 @@
 }
 
 #library-matrix-table-body {
+	
 	border-radius: 0px !important;
 	border : none;
 }
@@ -65,19 +66,8 @@
 	margin-top : 20px;
 }
 
-#viewer-wrapper {
-	width: 100%;
-	text-align: center;
-}
-
 .row-selected {
 	background-color: lightgray !important;
-}
-
-/* Mathjax container */
-.mjx-chtml.MJXc-display {
-	padding: none;
-	margin: 0px;
 }
 
 @media screen and (max-width : 991px ) {

@@ -16,15 +16,17 @@ const LibraryTab = () => {
 
     return (
         <div className='main-wrapper'>
-            <LibraryHeader/>
+            
             <Grid id='library-grid'>
+                <Grid.Row>
+                    <Grid.Column>
+                        <LibraryHeader/>
+                    </Grid.Column>
+                </Grid.Row>
                 { 
                     currentMatrix &&
-                        <Grid.Row>
-                                <MatrixViewer matrixObj={ currentMatrix } /> 
-                        </Grid.Row>
+                        <MatrixViewer matrixObj={ currentMatrix } /> 
                 }
-
                 <Grid.Row>
                     <Grid.Column 
                         mobile={16} 
