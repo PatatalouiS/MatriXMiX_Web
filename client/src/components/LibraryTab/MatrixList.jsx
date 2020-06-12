@@ -1,16 +1,16 @@
 
-import React, { useMemo, useState } from 'react';
-import { Table, Container, Grid } from 'semantic-ui-react';
+import React, { useMemo, useState, useCallback } from 'react';
+import { Table } from 'semantic-ui-react';
 import { useSelector } from 'react-redux';
 
 const MatrixList = ({ handleSelect }) => {
     const [ selectedIndex, setSelectedIndex ] = useState(0);
     const matrixLibrary = useSelector(x => x);
 
-    const handleClick = (index) => {
+    const handleClick = useCallback((index) => {
         setSelectedIndex(index);
         handleSelect(matrixLibrary[index]);
-    };
+    }, [ handleSelect, matrixLibrary ]);
 
     const rows = useMemo(() => matrixLibrary.map((matrixObj, index) => {
         const { name, matrix } = matrixObj;
@@ -26,11 +26,11 @@ const MatrixList = ({ handleSelect }) => {
                 <Table.Cell> { nbC }</Table.Cell>
             </Table.Row>
         )
-    }), [ matrixLibrary, selectedIndex ] );
+    }), [ matrixLibrary, selectedIndex, handleClick ] );
 
     return (
-        <Container fluid id='library-matrix-table-wrapper'>
-            <Table striped unstackable>
+        <div id='library-matrix-table-wrapper'>
+            <Table unstackable id='library-matrix-table-header'>
                 <Table.Header>
                     <Table.Row>
                         <Table.HeaderCell>Nom</Table.HeaderCell>
@@ -38,12 +38,16 @@ const MatrixList = ({ handleSelect }) => {
                         <Table.HeaderCell>Colonnes</Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
-
-                <Table.Body>
-                    { rows }
-                </Table.Body>
             </Table>
-        </Container>
+
+            <div id='library-matrix-table-body-wrapper'> 
+                <Table striped unstackable id='library-matrix-table-body'>
+                    <Table.Body>
+                        { rows }
+                    </Table.Body>
+                </Table>
+            </div>
+        </div>
     )
 }
 

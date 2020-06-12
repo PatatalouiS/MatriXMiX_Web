@@ -1,5 +1,6 @@
 
 import { createStore } from 'redux';
+import { DEFAULT_STATE } from './constants';
 
 // -------------------- Actions --------------------- //
 
@@ -24,7 +25,7 @@ export const deleteMatrix = (matrixObj) => {
 
 // -------------------- Reducers -------------------- //
 
-const matrixLibrary = (state = [], action) => {
+const matrixLibrary = (state = DEFAULT_STATE, action) => {
     const { matrixObj, type } = action;
 
     switch(type) {

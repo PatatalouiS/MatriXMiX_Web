@@ -1,20 +1,44 @@
+/*
+	Mobile : < 768 px
+	Tablet : 768 - 991 px
+	LittleM : 992 - 1200 px
+	BigM : > 1200 px
+¨*/
 
 #library-grid {
 	margin-top: 10px;
 }
 
-#library-matrix-list {
-	border-top: none;
-	border-right: none;
-	border-left: none;
+.ui.table {
+	margin : 0px !important;
+}
+
+#library-matrix-table-header {
+	margin: none;
+	border : none;
+	border-bottom: none;
 	border-bottom-left-radius: 0px;
 	border-bottom-right-radius: 0px;
+	margin-bottom : 0px !important;
+}
+
+#library-matrix-table-body-wrapper {
+	overflow-y: auto;
+	overflow-x: hidden;
+	max-height: 312px;
+	border-bottom: 1px solid lightgray;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+}
+
+#library-matrix-table-body {
+	border-radius: 0px !important;
+	border : none;
 }
 
 #library-matrix-table-wrapper {
-	overflow-y: auto;
-	overflow-x: hidden;
-	max-height: 200px;
+	min-height: 360px;
+	max-height: 360px;
 	box-shadow: 0.1px 0.1px 3px 0px lightgray;
 	border-radius: 5px;
 	border : 1px solid lightgray;
@@ -54,4 +78,16 @@
 .mjx-chtml.MJXc-display {
 	padding: none;
 	margin: 0px;
+}
+
+@media screen and (max-width : 991px ) {
+	#library-matrix-table-wrapper {
+		min-height: 200px;
+		max-height: 200px;
+		margin-bottom: 20px;
+	} 
+
+	#library-matrix-table-body-wrapper {
+		max-height: 152px;
+	}
 }

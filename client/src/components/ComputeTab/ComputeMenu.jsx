@@ -1,43 +1,34 @@
 
-import React, { useState } from 'react';
-import { Segment, Form, Dropdown } from 'semantic-ui-react';
-import * as math from 'mathjs';
-import { NewMatrix } from '../../utils/utils';
-import { OP_TYPES, OPS } from '../../utils/constants';
+import React, { useState, useMemo } from 'react';
+import { Segment, Form } from 'semantic-ui-react';
+import { OPS, CAT } from '../../utils/operations';
 
-const optionsTypes = OP_TYPES.map(({ name, text }) => ({
+const optionsTypes = CAT.map(({ name, text }) => ({
     key : name,
     text : text,
     value : name
 }));
 
-const optionsOP = { ...OPS };
-Object.keys(optionsOP).map((key) => {
-    optionsOP[key] = optionsOP[key]
-        .map(({ name, text }) => ({
-            key : name,
-            text : text,
-            value : name
-        }));
-});
+const ComputeMenu = ({ operation, onChange }) => {
+    const [ category, setCategory ] = useState(CAT[0]); 
 
-const ComputeMenu = ({ operation }) => {
-    const [ op, setOP ] = operation;
-
+    const optionsOp = useMemo(() => {
+        return OPS.filter((op ) => op.category === category.name)
+            .map((op, key) => ({
+                key : key,
+                text : op.text,
+                value : op.name
+            }));
+    }, [ category ]);
+    
     const handleTypeChange = (event, { value }) => {
-        console.log(value);
-        setOP({
-            opName   : OPS[value][0].name ,
-            typeName : value
-        });
+        setCategory(CAT.find(({ name }) => name === value ));
+        onChange(OPS.find(({ category }) => category === value));
     };
 
     const handleOpChange = (event, { value }) => {
-        setOP((prev) => ({
-           ...prev,
-            opName : value
-        }));
-    };
+        onChange(OPS.find(({ name }) => name === value));
+    }
 
     return (
         <Segment>
@@ -46,13 +37,15 @@ const ComputeMenu = ({ operation }) => {
                     label={ `Type d'opérations` }
                     placeholder='Select Operation type'
                     options={ optionsTypes }
-                    value={ op.typeName }
+                    text={  category.text }
+                    value={ category.text }
                     onChange={ handleTypeChange }/>
                 <Form.Select
                     label={ `opérations disponibles` }
                     placeholder='Select Operation type'
-                    value={ op.opName }
-                    options={ optionsOP[op.typeName] }
+                    options={ optionsOp }
+                    text={ operation.text }
+                    value={ operation.text }
                     onChange={ handleOpChange }/>
             </Form>
         </Segment>

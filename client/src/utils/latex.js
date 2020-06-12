@@ -1,8 +1,8 @@
 
 import * as math from 'mathjs';
 
-export const matrixToTex = (matrixObj) => {
-    const array = matrixObj.matrix.toArray();
+export const matrixToTex = ({ operation, result }) => {
+    const array = result.toArray();
     let tex     = '\\begin{bmatrix}';
 
     for(let line of array) {
@@ -16,4 +16,14 @@ export const matrixToTex = (matrixObj) => {
 
     tex += '\\end{bmatrix}';
     return tex;
+};
+
+export const realToTex = ({ operation, result }) => {
+    console.log(operation);
+    return `${operation.name === 'DET' ? 'Det' : 'Trace'} = ${result}`;
+};
+
+export default {
+    matrixToTex,
+    realToTex
 };

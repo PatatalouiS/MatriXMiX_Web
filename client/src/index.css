@@ -3,6 +3,7 @@ body {
 	background-image: url(img/background_final.jpg) !important;
 	background-size:  cover !important ;
 	background-repeat: no-repeat !important;
+	background-attachment: fixed !important;
 }
 
 .center {
@@ -33,5 +34,13 @@ body {
 
 .scrollable {
 	overflow: auto !important;
+}
+
+.full-width {
+	width: 100%;
+}
+
+.center-btn {
+	text-align: center;
 }
 

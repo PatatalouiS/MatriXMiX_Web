@@ -11,6 +11,17 @@ export const NewMatrix = (nbL, nbC, value = '0') => {
         .map(x => value);
 }
 
+export const getOperands = (library, opNames) => {
+    return opNames.map(name => {        
+        for(let matrixObj of library) {
+            if(matrixObj.name === name){
+                return matrixObj.matrix;
+            }
+        }
+        return 'NOT_EXIST'
+    });
+};
+
 export default {
     NewArray,
     NewMatrix

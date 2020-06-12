@@ -1,15 +1,14 @@
 
 import React from 'react';
 import MathJax from 'react-mathjax';
-import { matrixToTex } from '../utils/latex';
 
-const MatrixViewer = ({ matrixObj = null }) => {
-    const latex = matrixObj
-        ? matrixToTex({ value : matrixObj.matrix })
-        : null
+const LatexViewer = ({ result, operation }) => {
+    const latex = result !== null
+        ? operation.TeXFunc({ result, operation })
+        : null;
 
     return (
-        matrixObj && 
+        latex  &&
             <MathJax.Provider>
                 <div id='viewer-wrapper'>
                     <MathJax.Node formula={ latex }/>
@@ -18,4 +17,4 @@ const MatrixViewer = ({ matrixObj = null }) => {
     )
 };
 
-export default MatrixViewer;
+export default LatexViewer;

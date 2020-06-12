@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Grid, Segment } from 'semantic-ui-react';
+import { Grid } from 'semantic-ui-react';
 import LibraryHeader from './LibraryHeader';
 import MatrixList from './MatrixList';
 import MatrixAdder from './MatrixAdder';
