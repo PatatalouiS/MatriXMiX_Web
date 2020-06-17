@@ -5,13 +5,13 @@ import { matrixToTex } from '../utils/latex';
 
 const MatrixViewer = ({ matrixObj = null }) => {
     const latex = matrixObj
-        ? matrixToTex({ value : matrixObj.matrix })
+        ? matrixToTex({ result : matrixObj.matrix })
         : null
 
     return (
         matrixObj && 
             <MathJax.Provider>
-                <div id='viewer-wrapper'>
+                <div id='mjx-area' className='without-overflow'>
                     <MathJax.Node formula={ latex }/>
                 </div>
             </MathJax.Provider>

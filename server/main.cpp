@@ -7,71 +7,82 @@
 using namespace std;
 using namespace v8;
 
-Matrix a(3, 3, Matrix::R);
-Matrix b(3, 3, Matrix::R);
+Matrix b(3,3, { 2, 1, 1, 1, 2, 1, 1, 1, 2 } );
 
-Local<Context> context = Nan::New<Context>();
+// ------------ v8 --> CPP and CPP --> v8 conversion methods ------------- //
 
-Local<Object> complexToJs (const complex<double>& n) {
-    Local<Object> obj = Nan::New<Object>();
+Local<Value> complexToJs(const complex<double>& n) {
+    Local<Context> context = Nan::New<Context>();
+    if(n.imag() == 0.0) {
+        Local<Value> val = Nan::New(n.real());
+        return val;
+    }
+    else {
+        Local<Object> obj = Nan::New<Object>();
    
-    (void) obj->Set(context,
-                Nan::New("real").ToLocalChecked(),
-                Nan::New(n.real()));
+        (void) obj->Set(context,
+                    Nan::New("re").ToLocalChecked(),
+                    Nan::New(n.real()));
 
-    (void) obj->Set(context, 
-                Nan::New("imag").ToLocalChecked(),
-                Nan::New(n.imag()));
-    return obj;
+        (void) obj->Set(context, 
+                    Nan::New("im").ToLocalChecked(),
+                    Nan::New(n.imag()));
+
+        return obj;
+    }
 }
 
-Local<Object> matrixToJs (const Matrix& m) {
-    Local<Object> obj = Nan::New<Object>();
-
-    (void) obj->Set(context, 
-                Nan::New("rows").ToLocalChecked(),
-                Nan::New(m.getNbRows()));
-
-    (void) obj->Set(context,
-                Nan::New("cols").ToLocalChecked(),
-                Nan::New(m.getNbCols()));
-
+Local<Array> matrixToJs(const Matrix& m) {
+    Local<Context> context = Nan::New<Context>();
     Local<Array> arr = Nan::New<Array>();
+    unsigned int nbCols = m.getNbCols();
+    unsigned int nbRows = m.getNbRows();
 
-    for(int i = 0; i < 3; ++i) {
+    for(unsigned int i = 0; i < nbRows; ++i) {
         Local<Array> line = Nan::New<Array>();
 
-        for(int j = 0; j < 3; ++j) {
-            (void) line->Set(context, 
-                    j, 
-                    complexToJs(m[i][j]));
+        for(unsigned int j = 0; j < nbCols; ++j) {
+            
+            line->Set(context, 
+                j, 
+                Local<Value>(complexToJs(m[i][j])));
         }
 
         (void) arr->Set(context,
                     i,
                     line);
     }
-
-    (void) obj->Set(context, 
-                Nan::New("values").ToLocalChecked(), 
-                arr);
-
-    return obj;
+    return arr;
 }
 
 complex<double> complexToCpp(Local<Value>& comp) {
-    if(comp->IsNumber()) {
+    Local<Context> context = Nan::New<Context>();
+
+    if(comp->IsArray()) {
+        cerr << "Matrix Error : expected : Number or Object !" << endl;
+        exit(EXIT_FAILURE);
+    }
+    else if(comp->IsNumber()) {
         return complex<double>(comp->NumberValue(context).FromJust());
     }
     else if(comp->IsObject()) {
         Local<Object> compJs = comp->ToObject(context).ToLocalChecked();
-        double re = compJs->Get(context, 're').ToLocalChecked()->NumberValue(context).FromJust();
-        double im = compJs->Get(context, 'im').ToLocalChecked()->NumberValue(context).FromJust();
+        Local<Value> keyRe = Nan::New("re").ToLocalChecked();
+        Local<Value> keyIm = Nan::New("im").ToLocalChecked();
+ 
+        double re = compJs->Get(context, keyRe).ToLocalChecked()->NumberValue(context).FromJust();
+        double im = compJs->Get(context, keyIm).ToLocalChecked()->NumberValue(context).FromJust();
+
         return complex<double>(re, im);
+    }
+    else {
+        cerr << "Matrix Error : expected : Number or Object !" << endl;
+        exit(EXIT_FAILURE);
     }
 }
 
 Matrix matrixToCpp(Local<Array>& arr) {
+    Local<Context> context = Nan::New<Context>();
     vector<complex<double>> values;
 
     int nbL = arr->Length();
@@ -88,39 +99,156 @@ Matrix matrixToCpp(Local<Array>& arr) {
     return Matrix(nbL, nbC, values);
 }
 
+// ---------------------- Test methods -------------------- //
 
-
-NAN_METHOD(Hello) {
-    auto message = Nan::New("Hello from C++!").ToLocalChecked();
-    info.GetReturnValue().Set(message);
-}
-
-NAN_METHOD(Test) {
-    v8::Local<v8::Context> context = info.GetIsolate()->GetCurrentContext();
-
-    //Nan::HandleScope scope;
-    int result = 0;
-
+NAN_METHOD(isDiagonalisable) {
     if(info[0]->IsArray()) {
         Local<Array> array = Local<Array>::Cast(info[0]);
-
-        Local<Object> result = matrixToJs(matrixToCpp(array));
-        
-        info.GetReturnValue().Set(result);
+        Matrix a = matrixToCpp(array);
+        bool resC = a.isDiagonalisableC();
+        bool resR = a.isDiagonalisableR();
+        info.GetReturnValue().Set(resC && resR);
     }
-
-    
 }
 
+NAN_METHOD(isDiagonalisableR) {
+    if(info[0]->IsArray()) {
+        Local<Array> array = Local<Array>::Cast(info[0]);
+        Matrix a = matrixToCpp(array);
+        bool resR = a.isDiagonalisableR();
+        info.GetReturnValue().Set(resR);
+    }
+}
 
-NAN_METHOD(Other) {
-    info.GetReturnValue().Set(matrixToJs(a));
+NAN_METHOD(isDiagonalisableC) {
+    if(info[0]->IsArray()) {
+        Local<Array> array = Local<Array>::Cast(info[0]);
+        Matrix a = matrixToCpp(array);
+        bool resC = a.isDiagonalisableC();
+        info.GetReturnValue().Set(resC);
+    }
+}
+
+NAN_METHOD(isLU) {
+    if(info[0]->IsArray()) {
+        Local<Array> array = Local<Array>::Cast(info[0]);
+        Matrix a = matrixToCpp(array);
+        bool res = a.isSQMatrix() && a.isPositiveDefinite();
+        info.GetReturnValue().Set(res);
+    }
+}
+
+NAN_METHOD(isCholesky) {
+    if(info[0]->IsArray()) {
+        Local<Array> array = Local<Array>::Cast(info[0]);
+        Matrix a = matrixToCpp(array);
+        bool res = a.isSQMatrix() && a.isPositiveDefinite() && a.isSymetric();
+        info.GetReturnValue().Set(res);
+    }
+}
+
+// ------------------ Compute Methods ------------------------ //
+
+NAN_METHOD(diagonalise) {
+    v8::Local<v8::Context> context = info.GetIsolate()->GetCurrentContext();
+    if(info[0]->IsArray()) {
+        Local<Array> array = Local<Array>::Cast(info[0]);
+        Matrix a = matrixToCpp(array);
+        Matrix t1, diag, t2;
+        a.allMatrix(t1, diag, t2);
+
+        Local<Object> obj = Nan::New<Object>();
+
+        obj->Set(context, 
+            Nan::New("P").ToLocalChecked(),
+            matrixToJs(t1));
+
+        obj->Set(context, 
+            Nan::New("D").ToLocalChecked(),
+            matrixToJs(diag));
+        
+        obj->Set(context, 
+            Nan::New("P^{-1}").ToLocalChecked(),
+            matrixToJs(t2));
+
+        info.GetReturnValue().Set(obj);
+    }
+}
+
+NAN_METHOD(LU) {
+    v8::Local<v8::Context> context = info.GetIsolate()->GetCurrentContext();
+    if(info[0]->IsArray()) {
+        Local<Array> array = Local<Array>::Cast(info[0]);
+        Matrix a = matrixToCpp(array);
+        auto [ L, U ] = a.LUDecomposition();
+
+        Local<Object> obj = Nan::New<Object>();
+
+        obj->Set(context, 
+            Nan::New("L").ToLocalChecked(),
+            matrixToJs(L));
+
+        obj->Set(context, 
+            Nan::New("U").ToLocalChecked(),
+            matrixToJs(U));
+
+        info.GetReturnValue().Set(obj);
+    }
+}
+
+NAN_METHOD(QR) {
+    v8::Local<v8::Context> context = info.GetIsolate()->GetCurrentContext();
+    if(info[0]->IsArray()) {
+        Local<Array> array = Local<Array>::Cast(info[0]);
+        Matrix a = matrixToCpp(array);
+        auto [ Q, R ] = a.QR_Householder();
+
+        Local<Object> obj = Nan::New<Object>();
+
+        obj->Set(context, 
+            Nan::New("Q").ToLocalChecked(),
+            matrixToJs(Q));
+
+        obj->Set(context, 
+            Nan::New("R").ToLocalChecked(),
+            matrixToJs(R));
+
+        info.GetReturnValue().Set(obj);
+    } 
+}
+
+NAN_METHOD(cholesky) {
+    v8::Local<v8::Context> context = info.GetIsolate()->GetCurrentContext();
+    if(info[0]->IsArray()) {
+        Local<Array> array = Local<Array>::Cast(info[0]);
+        Matrix a = matrixToCpp(array);
+        auto [ L, Lt ] = a.cholesky();
+
+        Local<Object> obj = Nan::New<Object>();
+
+        obj->Set(context, 
+            Nan::New("L").ToLocalChecked(),
+            matrixToJs(L));
+
+        obj->Set(context, 
+            Nan::New("L^T").ToLocalChecked(),
+            matrixToJs(Lt));
+
+        info.GetReturnValue().Set(obj);
+    } 
 }
 
 NAN_MODULE_INIT(Initialize) {
-    NAN_EXPORT(target, Hello);
-    NAN_EXPORT(target, Other);
-    NAN_EXPORT(target, Test);
+    NAN_EXPORT(target, isDiagonalisable);
+    NAN_EXPORT(target, isDiagonalisableR);
+    NAN_EXPORT(target, isDiagonalisableC);
+    NAN_EXPORT(target, isLU);
+    NAN_EXPORT(target, isCholesky);
+
+    NAN_EXPORT(target, diagonalise);
+    NAN_EXPORT(target, LU);
+    NAN_EXPORT(target, QR);
+    NAN_EXPORT(target, cholesky);
 }
 
 NODE_MODULE(addon, Initialize);

@@ -1,21 +1,35 @@
 
 const express = require('express');
 const server = express();
-const { Hello, Other, Test } = require('./build/Release/addon');
-const util = require('util');
-const math = require('mathjs');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const testRouter = require('./testRouter.js');
+const calcRouter = require('./calcRouter.js');
+const path = require('path');
 
-const DL = {
-    showHidden : false,
-    depth : null
-};
+server.use(cors());
+server.use(bodyParser.json());
+server.use(express.static(path.join(__dirname, 'build')));
 
-console.log(util.inspect(Test([[{re : 5, im : 4},2,3],[4,5,6],[7,8,9]]), DL));
+// Custom middleware, for logging input routes and set more comfortably the
+// request object
+server.use((req, res, next) => {
+    console.log('New request to : ' + req.url);
 
-console.log(math.matrix([[{re : 1, im : 4}, 18], [2.3, {re : -5, im : -3.7}]]));
+    if(req.headers.matrix) {
+        req.matrix = JSON.parse(req.headers.matrix);
+    }
+    else if(req.headers.expr) {
+        req.expr = req.headers.expr;
+    }
+    next();
+});
 
-server.get('/api/compute/diag', (req, res) => {
+server.use('/api/test/', testRouter);
+server.use('/api/calc/', calcRouter);
 
+server.get('*', function (req, res) {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
 server.listen(8080, () => {

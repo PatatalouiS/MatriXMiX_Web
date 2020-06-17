@@ -52,8 +52,8 @@ body {
 	background-color: rgba(0,0,0,0) !important;
 }
 
-.vertical-align {	
-
+.without-overflow {
+	overflow: hidden !important;
 }
 
 #footer {
@@ -70,6 +70,10 @@ body {
 }
 
 #mjx-formula {
+	padding-top: 50px;
+	height: 100%;
+	width : 100%;
+	overflow: auto;
 
 }
 
@@ -80,6 +84,11 @@ body {
 #mjx-area {
 	height: 100%;
 	display : flex;
+	width : 100%;
 	align-items: center;
 	justify-content: center;
+	overflow-y: auto;
+	overflow-x: auto;
+	height: 100%;
+	width: 100%;
 }

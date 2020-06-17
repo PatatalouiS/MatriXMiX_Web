@@ -20,6 +20,12 @@ export const validName = (name, library) => {
         && isNaN(name[0]);
 };
 
+export const libContains = (name, library) => {
+    return library.some((matrixObj) => matrixObj.name === name);
+}
+
 export default {
-    validMatrix
+    validMatrix,
+    validName,
+    libContains
 };

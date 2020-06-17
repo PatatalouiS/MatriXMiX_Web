@@ -81,3 +81,19 @@
 		max-height: 152px;
 	}
 }
+
+.trash-btn {
+	height: 20px;
+	width: 20px;
+	background-color: transparent !important;
+}
+
+.red.trash.icon {
+	position: relative;
+	top : -7px;
+	left : -7px
+}
+
+.trash-btn-cell {
+	width: 25px;
+}

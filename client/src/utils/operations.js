@@ -1,15 +1,64 @@
 
 import * as math from 'mathjs';
-import { matrixToTex, realToTex } from './latex';
+import { matrixToTex, realToTex, multimatrixToTex } from './latex';
+import err from './error_success';
+import { fetchAPI } from './utils';
+
+// ----------------- COMPUTE HANDLERS ------------------- //
 
 const FUNC_ADD = (mA) => (mB) => math.add(mA, mB);
 const FUNC_SUBSTRACT = (mA) => (mB) => math.subtract(mA, mB);
 const FUNC_MULTIPLY = (mA) => (mB) => math.multiply(mA, mB);
 
-const FUNC_DET = (mA) => () => math.det(mA);
-const FUNC_TRACE = (mA) => () => math.trace(mA);
-const FUNC_INVERSE = (mA) => () => math.inv(mA);
-const FUNC_TRANSPOSE = (mA) => () => math.transpose(mA);
+const FUNC_DET = (mA) => (mB) => math.det(mA);
+const FUNC_TRACE = (mA) => (mB) => math.trace(mA);
+const FUNC_INVERSE = (mA) => (mB) => math.inv(mA);
+const FUNC_TRANSPOSE = (mA) => (mB) => math.transpose(mA);
+
+const FUNC_DIAGONALISATION = (mA) => async (mB) => 
+    await fetchAPI('/calc/diagonalise', mA);
+
+const FUNC_LU = (mA) => async (mB) => 
+    await fetchAPI('/calc/lu', mA);
+
+const FUNC_QR = (mA) => async (mB) => 
+    await fetchAPI('/calc/qr', mA);
+
+const FUNC_CHOLESKY = (mA) => async (mB) => 
+    await fetchAPI('/calc/cholesky', mA);
+
+// ----------------- TESTING HANDLERS ------------------ //
+
+const sameSize = (mA) => (mB) => {
+    const [ nbLA, nbCA ] = mA.size();
+    const [ nbLB, nbCB ] = mB.size();
+
+    return (nbLA === nbLB) && (nbCA === nbCB);
+};
+
+const condMultiply = (mA) => (mB) => mA.size()[1] === mB.size()[0];
+
+const isSQMatrix = (mA) => (mB) => mA.size()[0] === mA.size()[1];
+
+const isInverse = (mA) => (mB) => isSQMatrix(mA)() && (math.det(mA) !== 0);
+
+const NO_COND = (mA) => (mB) => true;
+
+const isDiagonalisableR = (mA) => async (mB) => await 
+    fetchAPI('/test/isdiagonalisable_r', mA);
+
+const isDiagonalisableC = (mA) => async (mB) => await 
+    fetchAPI('/test/isdiagonalisable_c', mA);
+
+const isLU = (mA) => async (mB) => await
+    fetchAPI('/test/islu', mA);
+
+const isQR = (mA) => (mB) => mA.size()[0] >= mA.size()[1]; 
+
+const isCholesky = (mA) => async (mB) => await 
+    fetchAPI('/test/ischolesky', mA);
+
+// ------------------ MAIN OBJECTS ---------------------  //
 
 export const CAT = [
     { 
@@ -27,10 +76,6 @@ export const CAT = [
     {
         name : 'DECOMPOSITION',
         text : 'Décompositions'
-    },
-    {
-        name : 'OTHERS',
-        text : 'Autres opérations'
     }
 ];
 
@@ -41,7 +86,9 @@ export const OPS = [
         text : 'Addition (A + B)',
         func : FUNC_ADD,
         TeXFunc : matrixToTex,
-        binary : true
+        testFunc : sameSize,
+        binary : true,
+        err    : err.ERR_SAME_SIZE
     },
     {
         name : 'SUBSTRACT',
@@ -49,7 +96,9 @@ export const OPS = [
         text : 'Soustraction (A - B)',
         func : FUNC_SUBSTRACT,
         TeXFunc : matrixToTex,
-        binary : true
+        testFunc : sameSize,
+        binary : true,
+        err    : err.ERR_SAME_SIZE
     },
     {
         name : 'MULTIPLY',
@@ -57,7 +106,9 @@ export const OPS = [
         text : 'Multiplication (A * B)',
         func : FUNC_MULTIPLY,
         TeXFunc : matrixToTex,
-        binary : true
+        testFunc : condMultiply,
+        binary : true,
+        err    : err.ERR_MULTIPLY
     },
     {
         name : 'DET',
@@ -65,7 +116,9 @@ export const OPS = [
         text : 'Déterminant',
         func : FUNC_DET,
         TeXFunc : realToTex,
-        binary : false
+        testFunc : isSQMatrix,
+        binary : false,
+        err   :  err.ERR_SQ_MATRIX
     },
     {
         name : 'TRACE',
@@ -73,7 +126,9 @@ export const OPS = [
         text : 'Trace',
         func : FUNC_TRACE,
         TeXFunc : realToTex,
-        binary : false
+        testFunc : isSQMatrix,
+        binary : false,
+        err     : err.ERR_SQ_MATRIX
     },
     {
         name : 'INVERSE',
@@ -81,7 +136,9 @@ export const OPS = [
         text : 'Inverse',
         func : FUNC_INVERSE,
         TeXFunc : matrixToTex,
-        binary : false
+        testFunc : isInverse,
+        binary : false,
+        err    : err.ERR_INVERSE
     },
     {
         name : 'TRANSPOSE',
@@ -89,7 +146,9 @@ export const OPS = [
         text : 'Transposée',
         func : FUNC_TRANSPOSE,
         TeXFunc : matrixToTex,
-        binary : false
+        testFunc : NO_COND,
+        binary : false,
+        err   : null
     },
     // RRF : {
     //     text : 'Echelonnage'
@@ -97,54 +156,72 @@ export const OPS = [
     // DIMS : {
     //     text : 'Etude des dimensions'
     // }
-    {
-        name : 'CAR_POLY',
-        category : 'DIAGONALISATION',
-        text : 'Polynôme caractéristique',
-        binary : false
-    },
-    {
-        name : 'EIGEN',
-        category : 'DIAGONALISATION',
-        text : 'Valeurs/Vecteurs propres',
-        binary : false
-    },
+    // {
+    //     name : 'CAR_POLY',
+    //     category : 'DIAGONALISATION',
+    //     text : 'Polynôme caractéristique',
+    //     func : () => {},
+    //     TeXFunc : () => {},
+    //     testFunc : isDiagonalisable,
+    //     binary : false,
+    //     err : err.ERR_DIAGONALISABLE
+    // },
+    // {
+    //     name : 'EIGEN',
+    //     category : 'DIAGONALISATION',
+    //     text : 'Valeurs/Vecteurs propres',
+    //     binary : false
+    // },
     {
         name : 'DIAG_R',
         category : 'DIAGONALISATION',
-        text : 'Diagonaliation dans R',
-        binary : false
+        text : 'Diagonalisation dans R',
+        func : FUNC_DIAGONALISATION,
+        TeXFunc : multimatrixToTex,
+        testFunc : isDiagonalisableR,
+        binary : false,
+        err : err.ERR_DIAGONALISE_R
     },
     {
         name : 'DIAG_C',
         category : 'DIAGONALISATION',
-        text : 'Diagonaliation dans C',
-        binary : false
+        text : 'Diagonalisation dans C',
+        func : FUNC_DIAGONALISATION,
+        TeXFunc : multimatrixToTex,
+        testFunc : isDiagonalisableC,
+        binary : false,
+        err : err.ERR_DIAGONALISE_C
     },
     {
         name : 'LU',
         category : 'DECOMPOSITION',
         text : 'Décomposition LU',
-        binary : false
+        func : FUNC_LU,
+        TeXFunc : multimatrixToTex,
+        testFunc : isLU,
+        binary : false,
+        err : err.ERR_LU
     },
     {
         name : 'QR',
         category : 'DECOMPOSITION',
         text : 'Décomposition QR',
-        binary : false
+        func : FUNC_QR,
+        TeXFunc : multimatrixToTex,
+        testFunc : isQR,
+        binary : false,
+        err : err.ERR_QR
     },
     {
         name : 'CHOLESKY',
         category : 'DECOMPOSITION',
         text : 'Décomposition Cholesky',
-        binary : false
+        func : FUNC_CHOLESKY,
+        TeXFunc : multimatrixToTex,
+        testFunc : isCholesky,
+        binary : false,
+        err : err.ERR_CHOLESKY
     },    
-    {
-        name : 'EXPR_EVAL',
-        category : 'OTHERS',
-        text : `Evaluation d'expression`,
-        binary : false
-    }
 ];
 
 export default {

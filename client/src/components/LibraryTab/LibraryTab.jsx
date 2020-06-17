@@ -16,7 +16,6 @@ const LibraryTab = () => {
 
     return (
         <div className='main-wrapper'>
-            
             <Grid id='library-grid'>
                 <Grid.Row>
                     <Grid.Column>
@@ -30,13 +29,15 @@ const LibraryTab = () => {
                 <Grid.Row>
                     <Grid.Column 
                         mobile={16} 
-                        computer={4} 
+                        computer={5} 
                         className='scrollable'>
-                        <MatrixList handleSelect={ handleSelected }/>
+                        <MatrixList 
+                            handleSelect={ handleSelected }
+                            remove />                 
                     </Grid.Column>
                     <Grid.Column 
                         mobile={16} 
-                        computer={12}>
+                        computer={11}>
                         <MatrixAdder/>
                     </Grid.Column>
                 </Grid.Row>
