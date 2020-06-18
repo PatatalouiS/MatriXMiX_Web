@@ -6,20 +6,19 @@ dotenv.config();
 
 export const API_URL = process.env.REACT_APP_API_URL;
 export const DEFAULT_SIZE = 3;
-export const MAX_SIZE     = 10;
+export const MAX_SIZE     = 7;
+export const ROUND_NUMBER = 9;
 
 const DEBUG_STATE = [
-    { name : 'A', matrix : math.matrix([[1,2,3],[4,5,6],[7,8,9]]) },
-    { name : 'B', matrix : math.matrix([[1,1,1,],[1,1,1,],[1,1,1,]]) },
-    { name : 'C', matrix : math.matrix([[1,0,3],[0,1,1],[5,0,1]]) },
-    { name : 'D', matrix : math.matrix([[1, 2], [3, 4]]) },
-    { name : 'E', matrix : math.matrix([[1,2],[3,4],[5,6]]) },
-    { name : 'F', matrix : math.matrix([   
-        [{re : 3, im : 4}, 2, 3.1],
-        [2, {re : 1, im : 7.2}, 3],
-        [2, 2, {re : 2.7 , im : 8}]
-    ]) },
-    { name : 'G', matrix : math.matrix([[2,-1,0],[-1,2,-1],[0,-1,2]])}
+    { name : 'ID', matrix : math.matrix([[1,0,0],[0,1,0],[0,0,1]]) },
+    { name : 'ONE', matrix : math.matrix([[1,1,1,],[1,1,1,],[1,1,1]]) },
+    { name : 'PB', matrix : math.matrix([[1,0,3],[0,1,1],[5,0,1]]) },
+    { name : 'SYM', matrix : math.matrix([[4,2,2],[2,4,2],[2,2,4]])},
+    { name : 'A', matrix : math.matrix([
+        ["sqrt(2) * 6", "sqrt(2)/3", 35],
+        ["3 + sqrt(2)i", "5 + (1/3)i", 1 ],
+        [0, "sqrt(5)", 1]
+    ])},
 ];
 
 export const DEFAULT_STATE = DEBUG_STATE;
@@ -31,4 +30,5 @@ export default {
     MAX_SIZE,
     DEFAULT_STATE,
     API_URL,
+    ROUND_NUMBER
 };

@@ -28,5 +28,16 @@ calcRouter.get('/cholesky', (req, res) => {
     });
 });
 
+calcRouter.get('/rrf', (req, res) => {
+    res.json({
+        result : matrix.RRF(req.matrix)
+    });
+});
+
+calcRouter.get('/dims', (req, res) => {
+    res.json({
+        result : matrix.dims(req.matrix)
+    });
+});
 
 module.exports = calcRouter;

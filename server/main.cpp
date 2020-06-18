@@ -7,8 +7,6 @@
 using namespace std;
 using namespace v8;
 
-Matrix b(3,3, { 2, 1, 1, 1, 2, 1, 1, 1, 2 } );
-
 // ------------ v8 --> CPP and CPP --> v8 conversion methods ------------- //
 
 Local<Value> complexToJs(const complex<double>& n) {
@@ -238,6 +236,38 @@ NAN_METHOD(cholesky) {
     } 
 }
 
+NAN_METHOD(RRF) {
+    v8::Local<v8::Context> context = info.GetIsolate()->GetCurrentContext();
+    if(info[0]->IsArray()) {
+        Local<Array> array = Local<Array>::Cast(info[0]);
+        Matrix a = matrixToCpp(array);
+        Matrix result = a.gaussReduction();
+
+        info.GetReturnValue().Set(matrixToJs(result));
+    } 
+}
+
+NAN_METHOD(dims) {
+    v8::Local<v8::Context> context = info.GetIsolate()->GetCurrentContext();
+    if(info[0]->IsArray()) {
+        Local<Array> array = Local<Array>::Cast(info[0]);
+        Matrix a = matrixToCpp(array);
+        auto result = a.dimensionsStudy();
+
+        Local<Object> obj = Nan::New<Object>();
+
+        obj->Set(context, 
+            Nan::New("dimIm").ToLocalChecked(),
+            Nan::New(result.first));
+
+        obj->Set(context, 
+            Nan::New("dimKer").ToLocalChecked(),
+            Nan::New(result.second));
+
+        info.GetReturnValue().Set(obj);
+    } 
+}
+
 NAN_MODULE_INIT(Initialize) {
     NAN_EXPORT(target, isDiagonalisable);
     NAN_EXPORT(target, isDiagonalisableR);
@@ -249,6 +279,8 @@ NAN_MODULE_INIT(Initialize) {
     NAN_EXPORT(target, LU);
     NAN_EXPORT(target, QR);
     NAN_EXPORT(target, cholesky);
+    NAN_EXPORT(target, RRF);
+    NAN_EXPORT(target, dims);
 }
 
 NODE_MODULE(addon, Initialize);

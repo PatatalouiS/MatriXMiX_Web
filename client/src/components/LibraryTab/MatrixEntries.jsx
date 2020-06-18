@@ -12,7 +12,7 @@ const MatrixEntries = ({ matrix, handleChange }) => {
                         <div className='matrix-input'>
                             <Form.Input 
                                 className='matrix-input' 
-                                placeholder='0' 
+                                placeholder='0'
                                 onChange={ handleChange(idL, idC) }/>
                         </div>
                     </Grid.Column>

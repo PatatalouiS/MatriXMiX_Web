@@ -6,7 +6,7 @@ import { Tab } from 'semantic-ui-react';
 
 const panes = [
     { menuItem : 'Calculer', render : () => <ComputeTab/> },
-    { menuItem : 'Librarie', render : () =>  <LibraryTab/> }
+    { menuItem : 'Librairie', render : () =>  <LibraryTab/> }
 ];
 
 const TabMenu = () => (

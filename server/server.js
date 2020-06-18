@@ -15,12 +15,8 @@ server.use(express.static(path.join(__dirname, 'build')));
 // request object
 server.use((req, res, next) => {
     console.log('New request to : ' + req.url);
-
     if(req.headers.matrix) {
         req.matrix = JSON.parse(req.headers.matrix);
-    }
-    else if(req.headers.expr) {
-        req.expr = req.headers.expr;
     }
     next();
 });

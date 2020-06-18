@@ -57,9 +57,15 @@ body {
 }
 
 #footer {
-	color : white;
-	padding-bottom: 30px;
+	margin-top : 20px;
+	margin-bottom: 10px;
 }
+
+.footer-segment {
+	text-align: center;
+	color : white;
+}
+
 
 /* Mathjax container */
 .mjx-chtml.MJXc-display {
@@ -71,10 +77,15 @@ body {
 
 #mjx-formula {
 	padding-top: 50px;
+	padding-bottom: 10px;
 	height: 100%;
 	width : 100%;
 	overflow: auto;
 
+}
+
+::-webkit-scrollbar {
+	border-radius: 10px;
 }
 
 #viewer-header {
@@ -92,3 +103,9 @@ body {
 	height: 100%;
 	width: 100%;
 }
+
+#contact-link {
+	color : lightgray;
+	text-decoration : underline;
+}
+

@@ -15,7 +15,7 @@ import MatrixSpecs from './MatrixSpecs';
 import { NewMatrix } from '../../utils/utils';
 import _ from '../../utils/constants';
 
-const MatrixAdder = () => {
+const MatrixAdder = ({ onAdd = () => {} }) => {
     const matrixLibrary         = useSelector(x => x);
     const dispatch              = useDispatch();
     const [ name , setName ]    = useState('');
@@ -60,7 +60,9 @@ const MatrixAdder = () => {
             }));
         }
         else {
-            dispatch(addMatrix({ name, matrix}));
+            const newMatrix = { name, matrix };
+            dispatch(addMatrix(newMatrix));
+            onAdd(newMatrix);
             setStatus(prev => ({ 
                 ...prev, 
                 success : handling.SUC_MATRIX_ADDED 

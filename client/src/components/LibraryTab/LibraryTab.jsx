@@ -24,7 +24,7 @@ const LibraryTab = () => {
                 </Grid.Row>
                 { 
                     currentMatrix &&
-                        <MatrixViewer matrixObj={ currentMatrix } /> 
+                        <MatrixViewer matrixObj={ currentMatrix }/> 
                 }
                 <Grid.Row>
                     <Grid.Column 
@@ -38,7 +38,7 @@ const LibraryTab = () => {
                     <Grid.Column 
                         mobile={16} 
                         computer={11}>
-                        <MatrixAdder/>
+                        <MatrixAdder onAdd={ handleSelected }/>
                     </Grid.Column>
                 </Grid.Row>
             </Grid>

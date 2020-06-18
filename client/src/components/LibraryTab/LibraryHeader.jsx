@@ -6,11 +6,11 @@ import { Segment } from 'semantic-ui-react';
 const LibraryHeader = () => (
     <Segment color='blue' secondary>
         Ici, vous pouvez accéder à la gestion de vos matrices, 
-        les visualiser avec MathJax, ou bien en ajouter de nouvelles 
-        afin de d'effectuer des calculs sur celles-ci. Pour l'instant, 
-        les calculs sont limités à des matrices de taille 10 x 10 au maximum.
+        les visualiser avec MathJax, en ajouter de nouvelles ou bien les supprimer. <br/>
         Afin de soulager votre machine, les calculs longs et/ou 
-        de forte complexité sont effectés sur notre serveur.
+        de forte complexité sont effectés sur notre serveur via la même librarie Matrix
+        que nous utilisons pour MatriXMiX Desktop. <br/>
+        Vous pouvez visualiser une matrice en sélectionnant sa ligne associée dans le tableau.
     </Segment>
 );
 

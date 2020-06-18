@@ -1,6 +1,7 @@
 
 import * as math from 'mathjs';
-import { matrixToTex, realToTex, multimatrixToTex } from './latex';
+import { matrixToTex, realToTex, 
+        dimsToTex, multimatrixToTex } from './latex';
 import err from './error_success';
 import { fetchAPI } from './utils';
 
@@ -26,6 +27,12 @@ const FUNC_QR = (mA) => async (mB) =>
 
 const FUNC_CHOLESKY = (mA) => async (mB) => 
     await fetchAPI('/calc/cholesky', mA);
+
+const FUNC_RRF = (mA) => async (mB) => 
+    await fetchAPI('/calc/rrf', mA);
+
+const FUNC_DIMS = (mA) => async (mB) => 
+    await fetchAPI('/calc/dims', mA);
 
 // ----------------- TESTING HANDLERS ------------------ //
 
@@ -150,28 +157,26 @@ export const OPS = [
         binary : false,
         err   : null
     },
-    // RRF : {
-    //     text : 'Echelonnage'
-    // },
-    // DIMS : {
-    //     text : 'Etude des dimensions'
-    // }
-    // {
-    //     name : 'CAR_POLY',
-    //     category : 'DIAGONALISATION',
-    //     text : 'Polynôme caractéristique',
-    //     func : () => {},
-    //     TeXFunc : () => {},
-    //     testFunc : isDiagonalisable,
-    //     binary : false,
-    //     err : err.ERR_DIAGONALISABLE
-    // },
-    // {
-    //     name : 'EIGEN',
-    //     category : 'DIAGONALISATION',
-    //     text : 'Valeurs/Vecteurs propres',
-    //     binary : false
-    // },
+    {
+        name : 'RRF',
+        category : 'UNARY_OP',
+        text : 'Echelonnage',
+        func : FUNC_RRF,
+        TeXFunc : matrixToTex,
+        testFunc : NO_COND,
+        binary : false,
+        err : null
+    },
+    {
+        name : 'DIMS',
+        category : 'UNARY_OP',
+        text : 'Etude des dimensions',
+        func : FUNC_DIMS,
+        TeXFunc : dimsToTex,
+        testFunc : NO_COND,
+        binary : false,
+        err : null
+    },
     {
         name : 'DIAG_R',
         category : 'DIAGONALISATION',

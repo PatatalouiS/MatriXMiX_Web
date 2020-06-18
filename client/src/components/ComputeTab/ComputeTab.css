@@ -1,3 +1,15 @@
 
-#compute-widget-wrapper {
+ #compute-widget-wrapper {
+    margin-top: 0px;
 }
+
+
+@media screen and (max-width : 991px ) {
+
+    #compute-widget-wrapper {
+        margin-top: 20px;
+    }
+
+}
+
+
