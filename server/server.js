@@ -6,10 +6,11 @@ const cors = require('cors');
 const testRouter = require('./testRouter.js');
 const calcRouter = require('./calcRouter.js');
 const path = require('path');
+const dotenv = require('dotenv').config();
 
 server.use(cors());
 server.use(bodyParser.json());
-server.use(express.static(path.join(__dirname, 'build')));
+server.use(express.static(path.join(__dirname, 'app')));
 
 // Custom middleware, for logging input routes and set more comfortably the
 // request object
@@ -25,9 +26,9 @@ server.use('/api/test/', testRouter);
 server.use('/api/calc/', calcRouter);
 
 server.get('*', function (req, res) {
-    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+    res.sendFile(path.join(__dirname, 'app', 'index.html'));
 });
 
-server.listen(8080, () => {
+server.listen(process.env.PORT, () => {
     console.log('Server is listenning');
 });
