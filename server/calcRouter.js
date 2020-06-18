@@ -2,7 +2,7 @@
 // Route : /api/calc
 
 const calcRouter = require('express').Router();
-const matrix = require('./build/Release/addon');
+const matrix = require('./build/Release/MatriXMiX');
 
 calcRouter.get('/diagonalise', (req, res) => {
     res.json({

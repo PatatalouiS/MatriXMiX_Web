@@ -2,7 +2,7 @@
 // Route : /api/test/
 
 const testRouter = require('express').Router();
-const matrix = require('./build/Release/addon');
+const matrix = require('./build/Release/MatriXMiX');
 
 testRouter.get('/isdiagonalisable', (req, res) => {
     res.json({

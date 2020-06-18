@@ -283,4 +283,4 @@ NAN_MODULE_INIT(Initialize) {
     NAN_EXPORT(target, dims);
 }
 
-NODE_MODULE(addon, Initialize);
+NODE_MODULE(MatriXMiX, Initialize);
