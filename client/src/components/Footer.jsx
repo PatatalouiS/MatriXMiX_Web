@@ -7,7 +7,7 @@ const Footer = () => {
         <Grid column='equal' stackable divided id='footer'>
             <Grid.Column width={5}>
                 <Segment basic className='footer-segment'>
-                    Réalisé pour l'UE LIFPROJET <br/>
+                    Réalisé pour l'UE LIFSTAGE <br/>
                     Université Claude Bernard Lyon1 <br/>
                 </Segment>
             </Grid.Column>

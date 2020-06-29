@@ -12,7 +12,6 @@ export const ROUND_NUMBER = 9;
 const DEBUG_STATE = [
     { name : 'ID', matrix : math.matrix([[1,0,0],[0,1,0],[0,0,1]]) },
     { name : 'ONE', matrix : math.matrix([[1,1,1,],[1,1,1,],[1,1,1]]) },
-    { name : 'PB', matrix : math.matrix([[1,0,3],[0,1,1],[5,0,1]]) },
     { name : 'SYM', matrix : math.matrix([[4,2,2],[2,4,2],[2,2,4]])},
     { name : 'A', matrix : math.matrix([
         ["sqrt(2) * 6", "sqrt(2)/3", 35],
